@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/java"/>
+	<classpathentry kind="src" path="src/test"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="lib" path="lib/lib-container-shared/c3p0-0.9.1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lib-container-shared/common-annotations.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lib-container-shared/commons-codec-1.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lib-container-shared/commons-collections-3.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lib-container-shared/commons-configuration-1.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lib-container-shared/commons-httpclient-3.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lib-container-shared/commons-io-1.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lib-container-shared/commons-lang-2.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lib-container-shared/commons-logging-1.0.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lib-container-shared/ehcache-1.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lib-container-shared/jaxen-core.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lib-container-shared/jaxen-jdom.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lib-container-shared/jdom.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lib-container-shared/jsp-api-2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lib-container-shared/jta.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lib-container-shared/junit-4.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lib-container-shared/log4j-1.2.15.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lib-container-shared/log4j-extras-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lib-container-shared/postgresql-8.2-506.jdbc3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lib-container-shared/quartz-1.6.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lib-container-shared/saxpath.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lib-container-shared/servlet-api-2.5-6.1.6.jar"/>
+	<classpathentry kind="output" path="tmp/eclipse"/>
+</classpath>

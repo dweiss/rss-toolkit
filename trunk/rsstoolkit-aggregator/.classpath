@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="web/WEB-INF/classes" path="src/java"/>
+	<classpathentry kind="src" path="src/test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="web/WEB-INF/lib/rome-0.9.jar" sourcepath="D:/_ftp/downloads/rome/java"/>
+	<classpathentry kind="lib" path="web/WEB-INF/lib/junit-3.8.1.jar"/>
+	<classpathentry kind="lib" path="web/WEB-INF/lib/junit-addons-1.4.jar"/>
+	<classpathentry kind="lib" path="web/WEB-INF/lib/spring.jar"/>
+	<classpathentry kind="lib" path="web/WEB-INF/lib/spring-aop.jar"/>
+	<classpathentry kind="lib" path="web/WEB-INF/lib/spring-beans.jar"/>
+	<classpathentry kind="lib" path="web/WEB-INF/lib/spring-context.jar"/>
+	<classpathentry kind="lib" path="web/WEB-INF/lib/spring-context-support.jar"/>
+	<classpathentry kind="lib" path="web/WEB-INF/lib/spring-core.jar"/>
+	<classpathentry kind="lib" path="web/WEB-INF/lib/spring-jdbc.jar"/>
+	<classpathentry kind="lib" path="web/WEB-INF/lib/spring-tx.jar"/>
+	<classpathentry kind="lib" path="web/WEB-INF/lib/apache-solr-1.3-dev.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/rsstoolkit-shared"/>
+	<classpathentry kind="output" path="web/WEB-INF/classes"/>
+</classpath>
