@@ -43,5 +43,4 @@ INSERT INTO feeds (title, url)
   VALUES ('BBC Europe', 'http://newsrss.bbc.co.uk/rss/newsonline_world_edition/europe/rss.xml');
 }}}
 
-== Configure and compile the rsstoolkit ==
-
+== Configure and compile the rss-toolkit ==
