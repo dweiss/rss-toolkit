@@ -1,0 +1,22 @@
+
+RSS-toolkit
+===========
+
+Syndication feeds' crawler, aggregator and indexer.
+
+
+Contents
+========
+
+deployment	- deployment container (JETTY), scripts, etc.
+
+rss-aggregator	- RSS aggregation service
+
+rss-shared	- shared source code (utilities)
+
+
+Documentation
+=============
+
+See documentation online:
+http://code.google.com/p/rss-toolkit/

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<feeds xmlns="http://www.meadan.org/doctypes/feeds">
+	<!-- RSS sources -->
+	<feed url="http://razarumi.wordpress.com/feed/" />
+	<feed url="http://feeds.salon.com/salon/news" />
+	<feed url="http://www.democraticunderground.com/rss/home_feed.php" />
+
+	<!-- ATOM sources -->
+	<feed url="http://googleblog.blogspot.com/atom.xml" />
+</feeds>
