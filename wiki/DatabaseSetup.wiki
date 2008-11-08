@@ -1,0 +1,32 @@
+#summary Database setup and installation
+
+= Introduction =
+
+This document provides guidelines for setting up PostgreSQL database for use with rss-toolkit.
+
+= Preparation =
+
+The following software needs to be installed on the server. We further assume Linux or BSD environment.
+
+  * PostgreSQL, version > 8.2, administrator privileges
+
+= Setting up the database = 
+
+The project contains handy SQL scripts that may accelerate further steps. They are located in `deployment/db-schema` folder of the distribution. We provide their names where appropriate so that tons of SQL do not have to be included on this page.
+
+*`001.db-init.sql`*: Create a separate database for use with rss-toolkit, create administrative account (change password of course).
+
+{{{
+CREATE DATABASE feeds ENCODING='UTF8';
+
+CREATE USER rssadmin WITH NOCREATEDB;
+ALTER DATABASE feeds OWNER TO rssadmin;
+ALTER USER rssadmin WITH ENCRYPTED PASSWORD 'CHANGEME';
+GRANT ALL PRIVILEGES ON DATABASE feeds TO rssadmin;
+}}}
+
+*`002.db-feeds.sql`*: Add tables and indices for storing feeds.
+
+*`003.db-status.sql`*: Add tables and indices for storing indexing status.
+
+*`004.db-articles.sql`*: Add tables and indices for storing fetched articles.
