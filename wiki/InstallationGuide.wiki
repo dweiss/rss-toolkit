@@ -49,5 +49,73 @@ rss-toolkit uses dependency injection (Spring) for configuration of its componen
 
   * `rsstoolkit-aggregator/web/WEB-INF/ctx-webapp.xml` -- The main Spring wireup. Configures database connection pools (`dataSource` bean), syndication feed parsers, feed  queue, articles collector (`collector.db` bean) and the number of concurrent HTTP threads to use for fetching article content (`aggregator` bean).
   * `jdbc.properties` -- Database connection properties. You may leave this file empty, we will configure database properties via system properties later.
-  * `post-cache.config.xml` -- First-level EhCache for detecting duplicates of identical posts.
+  * `post-cache.config.xml` -- First-level !EhCache for detecting duplicates of identical posts.
 
+After setting up your configuration, the project needs to be compiled into WAR (web application archive) format. This is the default deployment format most Java servlet containers accept (Tomcat, Jetty, Resin). Issue the following command:
+{{{
+ant clean dist
+}}}
+The command line should end with something like:
+{{{
+war:
+      [jar] Building jar: /home/user/rss-toolkit/rsstoolkit-aggregator/dist/aggregator.war
+
+BUILD SUCCESSFUL
+Total time: 4 seconds
+}}}
+Remember this path because this will be the location you will want to symlink to (or copy from).
+
+== Preparing and verifying the servlet container ==
+
+rss-toolkit comes bundled with a preconfigured JETTY servlet container and we will discuss its configuration, although any servlet container will do as long as a copy of all shared libraries (JAR files) from `rsstoolkit-shared/lib/lib-container-shared` is placed somewhere where the shared container's class loader may find them.
+
+The pre-configured JETTY instance is in `deployment/jetty`. The changes from standard distribution include:
+
+  * removing extra stuff that wasn't required,
+  * providing logging configurations and consolidating logs from `java.util.logging` and Log4J.
+  * providing default scripts for starting the service.
+  * limiting the number of resources JETTY will consume.
+
+First, copy (or symlink) the shared JARs:
+{{{
+cd deployment/jetty/lib/ext
+ln -s ../../../../rsstoolkit-shared/lib/lib-container-shared rsstoolkit-shared
+}}}
+Then symlink the WAR files you want to deploy on this container:
+{{{
+cd deployment/jetty/webapps
+ln -s ../../../dist/aggregator.war
+}}}
+Finally, edit the launcher file `rss-toolkit.sh`, modifying the properties required for the aggregator and matching your configuration:
+{{{
+POSTGRES_HOST=
+POSTGRES_DATABASE=
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+}}}
+Alternatively, you may also create rss-toolkit.conf file with these properties, they will be loaded by the script.
+
+== Starting the container and looking at the logs ==
+
+Once done configuring, start JETTY with:
+{{{
+cd deployment/jetty
+bin/rss-toolkit.sh run
+}}}
+This will hang the console you are in, so start another one and look at the log file.
+{{{
+cd deployment/jetty
+tail -f logs/full.log
+}}}
+The log file should show something like this:
+{{{
+...
+2008-11-08T13:59:37+0000 [INFO ] [pool-1-thread-3] com.carrotsearch.rsstoolkit.aggregator.collectors.DBCollector -- Adding new post: [post url=http://news.bbc.co.uk/go/rss/-/2/hi/business/7715604.stm, md5=02b5028955d7e621ed418c6132e0b69f]
+2008-11-08T13:59:37+0000 [INFO ] [pool-1-thread-3] com.carrotsearch.rsstoolkit.aggregator.collectors.DBCollector -- Adding new post: [post url=http://news.bbc.co.uk/go/rss/-/2/hi/business/7715265.stm, md5=77757dbb6bd30233a7e92667d1915921]
+2008-11-08T13:59:37+0000 [DEBUG] [pool-1-thread-3] com.carrotsearch.rsstoolkit.aggregator.Aggregator.fetchloop -- Fetch ok: 3 [fetched: 34, added: 34, ignored: 0]
+2008-11-08T13:59:37+0000 [DEBUG] [pool-1-thread-3] com.carrotsearch.rsstoolkit.aggregator.queue.DBFeedQueue -- Metadata deserialized: 1
+2008-11-08T13:59:37+0000 [DEBUG] [pool-1-thread-3] com.carrotsearch.rsstoolkit.aggregator.Aggregator.fetchloop -- Fetchers left: 0
+2008-11-08T13:59:37+0000 [INFO ] [Aggregator     ] com.carrotsearch.rsstoolkit.aggregator.Aggregator.fetchloop -- Fetch round duration: 1 second
+2008-11-08T13:59:37+0000 [INFO ] [Aggregator     ] com.carrotsearch.rsstoolkit.aggregator.Aggregator.fetchloop -- Next: 2008/11/08/15:04:37, pausing for 4 minutes 59 seconds
+}}}
+It means new articles have been fetched from existing feeds and added to the database. The aggregator then fell to sleep for some time (this time depends on the syndication feed -- some syndication feeds provide explicit crawl periods, for other feeds this period is calculated based on the history of updates).
