@@ -1,4 +1,5 @@
 #summary Everything from downloading the source code to running the aggregator.
+#labels Featured
 
 = Introduction =
 
@@ -26,3 +27,21 @@ cd rss-toolkit
 == Prepare the database ==
 
 It is assumed you have installed PostgreSQL and can log on to it using an administrative account. See separate Wiki DatabaseSetup page, it provides the details on SQL that needs to be executed to prepare the database. 
+
+== Add URLs of feeds to be monitored and crawled ==
+
+Once the database is ready, add the URLs of RSS and/or Atom feeds to be monitored and aggregated. Note that rss-toolkit is _not_ a Web spider and it will not expand this list, feeds must be added manually to the database.
+
+It is recommended to start with a few feeds, check that everything works as expected and then add more feeds.
+
+{{{
+INSERT INTO feeds (title, url) 
+  VALUES ('New York Times, Main', 'http://www.nytimes.com/services/xml/rss nyt/HomePage.xml');
+INSERT INTO feeds (title, url)
+  VALUES ('CNN, Top stories', 'http://rss.cnn.com/rss/cnn_topstories.rss');
+INSERT INTO feeds (title, url)
+  VALUES ('BBC Europe', 'http://newsrss.bbc.co.uk/rss/newsonline_world_edition/europe/rss.xml');
+}}}
+
+== Configure and compile the rsstoolkit ==
+
