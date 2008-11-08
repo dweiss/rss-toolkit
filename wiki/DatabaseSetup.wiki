@@ -25,8 +25,33 @@ ALTER USER rssadmin WITH ENCRYPTED PASSWORD 'CHANGEME';
 GRANT ALL PRIVILEGES ON DATABASE feeds TO rssadmin;
 }}}
 
-*`002.db-feeds.sql`*: Add tables and indices for storing feeds.
+After this step you may want to re-connect to postgres using user's `rssadmin` credentials.
+{{{
+psql --password -U rssadmin feeds
+}}}
 
-*`003.db-status.sql`*: Add tables and indices for storing indexing status.
+Next, from the connected shell, import the following scripts -- they create tables and indices:
+{{{
+\i [file]
+}}}
+where `files` are:
 
-*`004.db-articles.sql`*: Add tables and indices for storing fetched articles.
+  *`002.db-feeds.sql: feeds
+  *`003.db-status.sql: indexing status
+  *`004.db-articles.sql: content of fetched articles
+
+Check that everything is all right:
+{{{
+\dt
+}}}
+This should yield:
+{{{
+temp=> \dt
+              List of relations
+ Schema |      Name       | Type  |  Owner
+--------+-----------------+-------+----------
+ public | articles        | table | rssadmin
+ public | feeds           | table | rssadmin
+ public | indexing_status | table | rssadmin
+(3 rows)
+}}}
