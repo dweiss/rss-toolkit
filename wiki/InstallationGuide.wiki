@@ -1,0 +1,28 @@
+#summary Everything from downloading the source code to running the aggregator.
+
+= Introduction =
+
+This document should help you get started with the aggregation service. It provides links to every single step required to set up the rss-toolkit's services.
+
+= Preparation and required software =
+
+  * We assume Linux or BSD environment is used (no support for Windows, although there should be no problems with it).
+  * [http://ant.apache.org/ Apache ANT] will be required to compile the sources.
+  * [http://subversion.tigris.org/ Subversion] client will be required to fetch the code from the repository.
+  * [http://www.postgresql.org/ PostgreSQL] needs to be installed and configured.
+  * Java virtual machine, SUN's Java 1.6 or later is recommended.
+  * A servlet container such as Jetty (a preconfigured container is included in the distribution).
+  * Administrative privileges on the server will be required to set up the service.
+
+= Step by step instructions =
+
+== Get the source code ==
+First, check out the source code of rsstoolkit
+{{{
+svn checkout http://rss-toolkit.googlecode.com/svn/trunk/ rss-toolkit
+cd rss-toolkit
+}}}
+
+== Prepare the database ==
+
+It is assumed you have installed PostgreSQL and can log on to it using an administrative account. See separate Wiki DatabaseSetup page, it provides the details on SQL that needs to be executed to prepare the database. 
