@@ -119,3 +119,7 @@ The log file should show something like this:
 2008-11-08T13:59:37+0000 [INFO ] [Aggregator     ] com.carrotsearch.rsstoolkit.aggregator.Aggregator.fetchloop -- Next: 2008/11/08/15:04:37, pausing for 4 minutes 59 seconds
 }}}
 It means new articles have been fetched from existing feeds and added to the database. The aggregator then fell to sleep for some time (this time depends on the syndication feed -- some syndication feeds provide explicit crawl periods, for other feeds this period is calculated based on the history of updates).
+
+== Configuring background service and starting the container as a service ==
+
+*TODO*
