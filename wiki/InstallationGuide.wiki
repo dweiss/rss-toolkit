@@ -44,3 +44,10 @@ INSERT INTO feeds (title, url)
 }}}
 
 == Configure and compile the rss-toolkit ==
+
+rss-toolkit uses dependency injection (Spring) for configuration of its components. We tried to put sensible defaults, but you may be willing to look at the following files and verify that they match your configuration and hardware capabilities:
+
+  * `rsstoolkit-aggregator/web/WEB-INF/ctx-webapp.xml` -- The main Spring wireup. Configures database connection pools (`dataSource` bean), syndication feed parsers, feed  queue, articles collector (`collector.db` bean) and the number of concurrent HTTP threads to use for fetching article content (`aggregator` bean).
+  * `jdbc.properties` -- Database connection properties. You may leave this file empty, we will configure database properties via system properties later.
+  * `post-cache.config.xml` -- First-level EhCache for detecting duplicates of identical posts.
+
