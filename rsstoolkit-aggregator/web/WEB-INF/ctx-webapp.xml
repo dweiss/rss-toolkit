@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+	Spring component wire-up for the aggregator service.
+ -->
+
+<beans  xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+				http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+				http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+	<!-- Enable auto-wired properties -->
+	<context:annotation-config/>
+
+	<!-- Enable system properties and the default JDBC config. -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="WEB-INF/jdbc.properties" />
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+	</bean>
+
+	<!-- Pooled C3P0 DataSource -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass" value="${jdbc.driverClassName}"/>
+		<property name="jdbcUrl" value="${jdbc.url}"/>
+		<property name="user" value="${jdbc.username}"/>
+		<property name="password" value="${jdbc.password}"/>
+		
+		<property name="minPoolSize" value="2" />
+		<property name="acquireIncrement" value="1" />
+		<property name="maxPoolSize" value="5" />		
+	</bean>
+
+	<!-- Feed parser factory -->
+	<bean id="parser-factory.rome" class="com.carrotsearch.rsstoolkit.aggregator.feeds.parsers.RomeFeedFactory">
+	</bean>
+
+	<!-- DB queue -->
+	<bean id="queue.db" class="com.carrotsearch.rsstoolkit.aggregator.queue.DBFeedQueue">
+		<constructor-arg ref="dataSource" />
+		<constructor-arg ref="parser-factory.rome" />
+	</bean>
+
+	<!-- Database collector -->
+	<bean id="collector.db" class="com.carrotsearch.rsstoolkit.aggregator.collectors.DBCollector">
+		<constructor-arg ref="dataSource" />
+		<constructor-arg>
+			<bean class="com.carrotsearch.rsstoolkit.aggregator.collectors.FixedSizeCache">
+				<constructor-arg value="10000" />
+			</bean>
+		</constructor-arg>
+	</bean>
+
+	<!-- Aggregator bean -->
+	<bean id="aggregator" class="com.carrotsearch.rsstoolkit.aggregator.Aggregator">
+		<constructor-arg ref="queue.db" />
+		<constructor-arg ref="collector.db" />
+
+		<property name="fetcherThreads" value="10" />
+	</bean>
+</beans>

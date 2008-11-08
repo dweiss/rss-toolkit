@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="rss-toolkit" default="all">
+    <description>
+	Build all projects.
+    </description>
+
+    <target name="clean">
+	    <ant dir="rsstoolkit-aggregator" antfile="build.xml" target="clean" inheritall="false" />
+    </target>
+    
+    <target name="dist">
+    	<mkdir dir="dist" />
+	    <ant dir="rsstoolkit-aggregator" antfile="build.xml" target="war" inheritall="false">
+	    	<property name="dist.war" location="dist/aggregator.war" />
+	    </ant>
+    </target>
+
+    <target name="all" depends="clean,dist" />
+</project>

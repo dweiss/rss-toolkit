@@ -1,0 +1,15 @@
+<ehcache>
+	<diskStore path="java.io.tmpdir"/>
+
+    <defaultCache 
+            maxElementsInMemory="20000"
+            eternal="false"
+            timeToIdleSeconds="86400"
+            timeToLiveSeconds="86400"
+            overflowToDisk="false"
+            diskSpoolBufferSizeMB="30"
+            diskPersistent="false"
+            diskExpiryThreadIntervalSeconds="120"
+            memoryStoreEvictionPolicy="LRU"
+            />
+</ehcache>
