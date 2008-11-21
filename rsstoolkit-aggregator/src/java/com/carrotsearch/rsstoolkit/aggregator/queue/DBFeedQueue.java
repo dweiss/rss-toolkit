@@ -1,17 +1,9 @@
 package com.carrotsearch.rsstoolkit.aggregator.queue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -77,16 +69,27 @@ public final class DBFeedQueue implements IFeedQueue
      *         which have an expected fetch time lower than <code>now</code> will be
      *         returned.
      */
-    @SuppressWarnings("unchecked")
     public Collection<IFeed> getStaleFeeds(final long now)
     {
         final Timestamp ts = new Timestamp(now);
+        final ArrayList<IFeed> stale = new ArrayList<IFeed>();
 
-        final ArrayList stale = new ArrayList();
-
+        class QueueEntry
+        {
+            public final String URL;
+            public final long id;
+            
+            public QueueEntry(String URL, long id)
+            {
+                this.id = id;
+                this.URL = URL;
+            }
+        };
+        
         // Run query.
         Connection conn = null;
         PreparedStatement ps = null;
+        final ArrayList<QueueEntry> queue = new ArrayList<QueueEntry>();
         try
         {
             final String STALE_FEEDS = " SELECT id, url" + " FROM feeds " + " WHERE "
@@ -101,30 +104,23 @@ public final class DBFeedQueue implements IFeedQueue
             final ResultSet rs = ps.executeQuery();
             while (rs.next())
             {
-                final Long id = rs.getLong(1);
+                final long id = rs.getLong(1);
                 final String url = rs.getString(2);
-                stale.add(new Object []
-                {
-                    id, url
-                });
+                queue.add(new QueueEntry(url, id));
             }
             rs.close();
 
             // Update incorrect feeds.
-            for (int i = 0; i < stale.size(); i++)
+            for (QueueEntry q : queue)
             {
-                final Object id_url = stale.get(i);
-                final Long id = (Long) ((Object []) id_url)[0];
-                final String url = (String) ((Object []) id_url)[1];
-
                 try
                 {
-                    stale.set(i, getFeed(id, url));
+                    stale.add(getFeed(q.id, q.URL));
                 }
                 catch (URISyntaxException e)
                 {
-                    updateFeedStatus0(conn, id, FeedStatus.UNRECOVERABLE_ERROR,
-                        "URI parsing error: " + url);
+                    updateFeedStatus0(conn, q.id, FeedStatus.UNRECOVERABLE_ERROR,
+                        "URI parsing error: " + q.URL);
                     continue;
                 }
             }
@@ -357,7 +353,6 @@ public final class DBFeedQueue implements IFeedQueue
     /**
      * Produce an {@link IFeed} for a given id, url pair.
      */
-    @SuppressWarnings("unused")
     private IFeed getFeed(Long id, String url) throws URISyntaxException
     {
         return this.feedParsersFactory.getFeedParser(new URI(url), id);
