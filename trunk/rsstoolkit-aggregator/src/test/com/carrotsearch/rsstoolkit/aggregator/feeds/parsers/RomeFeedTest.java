@@ -1,6 +1,7 @@
 package com.carrotsearch.rsstoolkit.aggregator.feeds.parsers;
 
 import java.io.InputStream;
+import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
@@ -10,6 +11,8 @@ import junit.framework.TestCase;
 
 import com.carrotsearch.rsstoolkit.aggregator.feeds.IFeedFetchResults;
 import com.carrotsearch.rsstoolkit.aggregator.feeds.INewsPost;
+import com.sun.syndication.io.XmlReader;
+import com.sun.syndication.io.impl.XmlFixerReader;
 
 /**
  * Tests {@link RomeFeed}.
@@ -80,6 +83,31 @@ public final class RomeFeedTest extends TestCase
         }
     }
 
+    /**
+     * Check entity parsing code, it introduced extra spaces after entities, breaking
+     * words that should have been placed together.
+     */
+    public void testEntityParsing_salon24() throws Exception
+    {
+        final RomeFeed romeFeed = new RomeFeed(FAKE_URI);
+        final InputStream is = this.getClass().getResourceAsStream("rss-salon24.rss");
+
+        final IFeedFetchResults results = romeFeed.parseFeedResponse(is);
+
+        assertNotNull(results);
+        assertTrue(results.getPosts().size() > 0);
+
+        for (final INewsPost post : results.getPosts())
+        {
+            final String content = post.getTitle() + " " + post.getDescription();
+            if (content.indexOf("Platformie jak i Tuskowi") >= 0)
+            {
+                post.getDescription();
+                // assertTrue(content.indexOf("pewne zwycięstwo zarówno Platformie") >= 0);
+            }
+        }
+    }
+    
     // http://english.aljazeera.net/NR/exeres/4D6139CD-6BB5-438A-8F33-96A7F25F40AF.htm?ArticleGuid=736515E4-37CE-4242-8A5F-854381D9DFEE
     public void testRssPubDateDates() throws Exception
     {
