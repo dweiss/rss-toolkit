@@ -7,10 +7,15 @@
 
     <target name="clean">
 	    <ant dir="rsstoolkit-aggregator" antfile="build.xml" target="clean" inheritall="false" />
+	    <ant dir="rsstoolkit-shared" antfile="build.xml" target="clean" inheritall="false" />
     </target>
-    
+
     <target name="dist">
     	<mkdir dir="dist" />
+	    <ant dir="rsstoolkit-shared" antfile="build.xml" target="jar" inheritall="false">
+	    	<property name="dist.jar" location="dist/rsstoolkit-shared.jar" />
+	    </ant>
+
 	    <ant dir="rsstoolkit-aggregator" antfile="build.xml" target="war" inheritall="false">
 	    	<property name="dist.war" location="dist/aggregator.war" />
 	    </ant>
