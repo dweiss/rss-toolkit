@@ -780,6 +780,10 @@ public class HTMLStripReader extends Reader {
       this.keepAlignedPositions = keepAligned;
   }
 
+  public static final HashMap<String,Character> getEntityTable() {
+      return new HashMap<String, Character>(entityTable);
+  }
+
   private static final HashMap<String,Character> entityTable;
   static {
     entityTable = new HashMap<String,Character>();
