@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="rsstoolkit-aggregator" default="war">
+<project name="rsstoolkit-shared" default="jar">
     <description>
-Periodically aggregates posts from syndication feeds.
+Common utilities for rsstoolkit.
     </description>
 
     <property name="tmp.dir" location="tmp" />
@@ -10,39 +10,32 @@ Periodically aggregates posts from syndication feeds.
     <property name="build.tests.dir"   location="${tmp.dir}/classes-tests" />
     <property name="tests.report.dir"  location="${tmp.dir}/test-report" />
 
-    <property name="dist.war" location="tmp/rsstoolkit-aggregator.war" />
-
+    <property name="dist.jar" location="tmp/rsstoolkit-shared.jar" />
 
     <path id="compile.classpath">
-        <fileset dir="web/WEB-INF/lib">
-            <include name="*.jar" />
-        </fileset>
-        <fileset dir="../rsstoolkit-shared/lib">
+        <fileset dir="lib">
             <include name="**/*.jar" />
         </fileset>
     </path>
 
     <path id="test.classpath">
-        <path refid="compile.classpath" />
+        <fileset dir="lib">
+            <include name="*.jar" />
+        </fileset>
+
         <path location="${build.tests.dir}" />
         <path location="${build.classes.dir}" />
     </path>
+
 
     <target name="clean" description="Removes temporary files">
         <delete dir="${tmp.dir}" failonerror="false" quiet="true" />
     </target>
 
 
-    <target name="war" depends="compile" description="Compiles a WAR file.">
-        <jar jarfile="${dist.war}" update="false">
-            <!-- application contet -->
-            <fileset dir="web">
-                <exclude name="WEB-INF/classes/**" />
-                <exclude name="*.ser" />
-            </fileset>
-
-            <!-- classes -->
-            <zipfileset dir="${build.classes.dir}" prefix="WEB-INF/classes" />
+    <target name="jar" depends="compile" description="Compiles a JAR file.">
+        <jar jarfile="${dist.jar}" update="false">
+            <zipfileset dir="${build.classes.dir}" />
         </jar>
     </target>
 
@@ -50,10 +43,6 @@ Periodically aggregates posts from syndication feeds.
     <target name="compile" description="Compiles source files.">
         <mkdir dir="${build.classes.dir}" />
         <mkdir dir="${build.tests.dir}" />
-
-        <ant dir="../rsstoolkit-shared" target="jar">
-            <property name="dist.jar" location="web/WEB-INF/lib/rsstoolkit-shared.jar" />
-        </ant>
 
         <javac destdir="${build.classes.dir}" encoding="UTF-8" debug="true">
             <src location="src/java" />
@@ -64,13 +53,11 @@ Periodically aggregates posts from syndication feeds.
             <fileset dir="src/java">
                 <exclude name="**/*.java" />
             </fileset>
-            <fileset dir="../rsstoolkit-shared/src/java">
-                <exclude name="**/*.java" />
-            </fileset>
         </copy>
 
         <javac destdir="${build.tests.dir}" encoding="UTF-8" debug="true">
             <src location="src/test" />
+
             <classpath refid="compile.classpath" />
             <classpath location="${build.classes.dir}" />
         </javac>
