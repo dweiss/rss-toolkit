@@ -1,12 +1,9 @@
 package com.carrotsearch.rsstoolkit.aggregator.feeds;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Date;
 
-import org.apache.solr.analysis.HTMLStripReader;
+import com.carrotsearch.util.MarkupUtils;
 
 /**
  * A base implementation of {@link INewsPost} interface.
@@ -86,7 +83,7 @@ public class NewsPostImpl implements INewsPost
      */
     public void setDescription(String description)
     {
-        this.description = toPlainText(description);
+        this.description = MarkupUtils.toPlainText(description);
     }
 
     /**
@@ -110,7 +107,7 @@ public class NewsPostImpl implements INewsPost
      */
     public void setTitle(String title)
     {
-        this.title = toPlainText(title);
+        this.title = MarkupUtils.toPlainText(title);
     }
 
     /**
@@ -147,35 +144,6 @@ public class NewsPostImpl implements INewsPost
     public Object getFeedId()
     {
         return feedId;
-    }
-
-    /**
-     * Converts a string with possible HTML codes to plain text.
-     */
-    final static String toPlainText(String html)
-    {
-        if (html == null)
-        {
-            return null;
-        }
-
-        try
-        {
-            final HTMLStripReader reader = new HTMLStripReader(new StringReader(html));
-            final StringWriter writer = new StringWriter();
-            final char [] buffer = new char [4096];
-            int len;
-            while ((len = reader.read(buffer)) > 0)
-            {
-                writer.write(buffer, 0, len);
-            }
-
-            return writer.toString();
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException("Unreachable code.");
-        }
     }
 
     @Override
