@@ -27,6 +27,47 @@ public final class ArticleDAO
     }
 
     /**
+     * Get all articles starting at the given identifier (inclusive), but not exceeding
+     * the given limit of articles.
+     */
+    public List<Article> getFromId(int lastId, int limit)
+    {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try
+        {
+            conn = dataSource.getConnection();
+
+            ps = conn
+                .prepareStatement(
+                    "SELECT id, url, title, content, posted_at, added_at, fk_feed_id "
+                    + "FROM articles " + "WHERE id >= ?" + "ORDER BY id ASC LIMIT ?");
+
+            ps.setInt(1, lastId);
+            ps.setInt(2, limit);
+
+            final ResultSet rs = ps.executeQuery();
+            final ArrayList<Article> docs = new ArrayList<Article>(rs.getFetchSize());
+            while (rs.next())
+            {
+                docs.add(new Article(rs.getInt(1), rs.getString(2), rs.getString(3), rs
+                    .getString(4), rs.getTimestamp(5).getTime(), rs.getTimestamp(6)
+                    .getTime(), rs.getInt(7)));
+            }
+            return docs;
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeException("Could not fetch articles: " + e.getMessage(), e);
+        }
+        finally
+        {
+            CloseableUtils.close(ps);
+            CloseableUtils.close(conn);
+        }
+    }
+
+    /**
      * Get all articles starting at the given identifier (inclusive). Articles should be
      * sorted in ascending order of their <code>posted_at</code> field.
      */

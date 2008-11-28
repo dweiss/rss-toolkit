@@ -1,75 +1,45 @@
-/* SingleHttpConnectionManager
+
+/*
+ * Carrot2 project.
  *
- * $Id: SingleHttpConnectionManager.java 3882 2005-10-10 09:31:18Z gojomo $
+ * Copyright (C) 2002-2008, Dawid Weiss, Stanisław Osiński.
+ * Portions (C) Contributors listed in "carrot2.CONTRIBUTORS" file.
+ * All rights reserved.
  *
- * Created on Mar 8, 2004
- *
- * Copyright (C) 2004 Internet Archive.
- *
- * This file is part of the Heritrix web crawler (crawler.archive.org).
- *
- * Heritrix is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Lesser Public License as published by
- * the Free Software Foundation; either version 2.1 of the License, or
- * any later version.
- *
- * Heritrix is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser Public License for more details.
- *
- * You should have received a copy of the GNU Lesser Public License
- * along with Heritrix; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Refer to the full license file "carrot2.LICENSE"
+ * in the root folder of the repository checkout or at:
+ * http://www.carrot2.org/carrot2.LICENSE
  */
+
 package com.carrotsearch.util.httpclient;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpConnection;
-import org.apache.commons.httpclient.SimpleHttpConnectionManager;
+import org.apache.commons.httpclient.*;
 
 /**
- * An HttpClient-compatible HttpConnection "manager" that actually just gives out a new
- * connection each time -- skipping the overhead of connection management, since we
- * already throttle our crawler with external mechanisms.
- * 
- * @author gojomo
+ * A simple connection manager serving a new connection every time it is asked to do so.
  */
 public final class SingleHttpConnectionManager extends SimpleHttpConnectionManager
 {
-    /**
-     * 
-     */
-    @SuppressWarnings("unused")
-    public HttpConnection getConnectionWithTimeout(HostConfiguration hostConfiguration,
-        long timeout)
+    /** */
+    @Override
+    public HttpConnection getConnectionWithTimeout(HostConfiguration hostConfiguration, long timeout)
     {
-
         final HttpConnection conn = new HttpConnection(hostConfiguration);
         conn.setHttpConnectionManager(this);
         conn.getParams().setDefaults(this.getParams());
+        conn.getParams().setSoTimeout((int) timeout);
         return conn;
     }
 
-    /**
-     * 
-     */
+    /** */
+    @Override
     public void releaseConnection(HttpConnection conn)
     {
-        // ensure connection is closed
-        finishLast(conn);
-    }
-
-    /**
-     * Close and cleanup after the recent connection.
-     */
-    static void finishLast(HttpConnection conn)
-    {
         // copied from superclass because it wasn't made available to subclasses
-        InputStream lastResponse = conn.getLastResponseInputStream();
+        final InputStream lastResponse = conn.getLastResponseInputStream();
         if (lastResponse != null)
         {
             conn.setLastResponseInputStream(null);
@@ -77,7 +47,7 @@ public final class SingleHttpConnectionManager extends SimpleHttpConnectionManag
             {
                 lastResponse.close();
             }
-            catch (IOException ioe)
+            catch (final IOException ioe)
             {
                 // ignore.
             }
