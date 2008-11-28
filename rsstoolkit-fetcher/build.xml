@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="rss-events" default="dist">
+<project name="rsstoolkit-fetcher" default="war">
     <description>
-RSS Events Service
+Periodically aggregates posts from syndication feeds.
     </description>
 
     <property name="tmp.dir" location="tmp" />
@@ -10,42 +10,31 @@ RSS Events Service
     <property name="build.tests.dir"   location="${tmp.dir}/classes-tests" />
     <property name="tests.report.dir"  location="${tmp.dir}/test-report" />
 
-    <property name="dist.dir" location="dist" />
-    <property name="dist.name" value="rss-events" />
+    <property name="dist.war" location="tmp/rsstoolkit-fetcher.war" />
 
 
     <path id="compile.classpath">
         <fileset dir="web/WEB-INF/lib">
             <include name="*.jar" />
         </fileset>
-        <fileset dir="../rss-shared/lib">
+        <fileset dir="../rsstoolkit-shared/lib">
             <include name="**/*.jar" />
         </fileset>
     </path>
 
     <path id="test.classpath">
-        <fileset dir="web/WEB-INF/lib">
-            <include name="*.jar" />
-        </fileset>
-        <fileset dir="../rss-shared/lib">
-            <include name="**/*.jar" />
-            <exclude name="**/jetty/**" />
-        </fileset>
-	<path location="${build.tests.dir}" />
+        <path refid="compile.classpath" />
+        <path location="${build.tests.dir}" />
         <path location="${build.classes.dir}" />
     </path>
 
-
     <target name="clean" description="Removes temporary files">
         <delete dir="${tmp.dir}" failonerror="false" quiet="true" />
-        <delete dir="${dist.dir}" failonerror="false" quiet="true" />
     </target>
 
 
     <target name="war" depends="compile" description="Compiles a WAR file.">
-        <mkdir dir="${dist.dir}" />
-
-        <jar jarfile="${dist.dir}/${dist.name}.war" update="false">
+        <jar jarfile="${dist.war}" update="false">
             <!-- application contet -->
             <fileset dir="web">
                 <exclude name="WEB-INF/classes/**" />
@@ -58,17 +47,16 @@ RSS Events Service
     </target>
 
 
-    <target name="dist" depends="test,war" description="Puts together the whole distribution.">
-    </target>
-
-
     <target name="compile" description="Compiles source files.">
         <mkdir dir="${build.classes.dir}" />
         <mkdir dir="${build.tests.dir}" />
 
+        <ant dir="../rsstoolkit-shared" target="jar">
+            <property name="dist.jar" location="web/WEB-INF/lib/rsstoolkit-shared.jar" />
+        </ant>
+
         <javac destdir="${build.classes.dir}" encoding="UTF-8" debug="true">
             <src location="src/java" />
-            <src location="../rss-shared/src/java" />
             <classpath refid="compile.classpath" />
         </javac>
 
@@ -76,13 +64,14 @@ RSS Events Service
             <fileset dir="src/java">
                 <exclude name="**/*.java" />
             </fileset>
-            <fileset dir="../rss-shared/src/java">
+            <fileset dir="../rsstoolkit-shared/src/java">
                 <exclude name="**/*.java" />
             </fileset>
         </copy>
 
         <javac destdir="${build.tests.dir}" encoding="UTF-8" debug="true">
             <src location="src/test" />
+	    <exclude name="**/*Standalone*" />
             <classpath refid="compile.classpath" />
             <classpath location="${build.classes.dir}" />
         </javac>
