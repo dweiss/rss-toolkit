@@ -6,8 +6,9 @@
     </description>
 
     <target name="clean">
-	    <ant dir="rsstoolkit-aggregator" antfile="build.xml" target="clean" inheritall="false" />
 	    <ant dir="rsstoolkit-shared" antfile="build.xml" target="clean" inheritall="false" />
+	    <ant dir="rsstoolkit-aggregator" antfile="build.xml" target="clean" inheritall="false" />
+	    <ant dir="rsstoolkit-fetcher" antfile="build.xml" target="clean" inheritall="false" />
     </target>
 
     <target name="dist">
@@ -18,6 +19,10 @@
 
 	    <ant dir="rsstoolkit-aggregator" antfile="build.xml" target="war" inheritall="false">
 	    	<property name="dist.war" location="dist/aggregator.war" />
+	    </ant>
+
+	    <ant dir="rsstoolkit-fetcher" antfile="build.xml" target="war" inheritall="false">
+		    <property name="dist.war" location="dist/fetcher.war" />
 	    </ant>
     </target>
 
