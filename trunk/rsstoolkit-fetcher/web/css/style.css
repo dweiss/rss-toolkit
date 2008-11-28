@@ -1,0 +1,24 @@
+
+html {
+}
+
+table,body {
+	font: 10pt 'Lucida Grande', Verdana, Arial, Sans-Serif;
+	color: #444;
+	background: white;
+	text-align: justify;
+}
+
+table th {
+	border-bottom: 1px solid gray;
+	background: #f0f0f0;
+}
+
+table {
+	border-top: 2px solid gray;
+	border-bottom: 2px solid gray;
+}
+
+table td {
+	padding-right: 10px;
+}
